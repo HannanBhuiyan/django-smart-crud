@@ -1,0 +1,26 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="row">
+     <div class="col-4">
+         <div class="card-box">
+          <div class="card">
+               <img class="card-img-top" src="{{ pid.product_image.url }}" alt="Card image cap">
+               <div class="card-body">
+                 <h5 class="card-title">{{ pid.product_title }}</h5>
+                 <p class="card-text">{{ pid.product_desc }}</p>
+                 <a href="#" class="btn btn-primary mb-2">price {{ pid.product_price }}</a>
+                 <a href="#" class="btn btn-primary mb-2">In Stock {{ pid.in_stock }}</a>
+                 <a href="#" class="btn btn-primary mb-2">Varient {{ pid.product_varient }}</a>
+                 <a href="#" class="btn btn-primary mb-2">Category {{ pid.category.category_name }}</a>
+                 <a href="#" class="btn btn-primary mb-2">Subcategory {{ pid.subcategory.subcategory_name }}</a>
+                 <a href="#" class="btn btn-primary mb-2">Status {{ pid.status }}</a>
+ 
+               </div>
+             </div>
+          </div>
+     </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row mt-5">
+    <div class="col-9 m-auto">
+        <div class="card-box">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="list_item">
+                    <h2 class="mb-4">Add Category</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'category' %}">Category</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Add Category</li>
+                </ol>
+            </nav>
+            <form action="{% url 'category_store' %}" method='POST'>
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Category Name</label>
+                  <input type="text" name="category_name" id="title" placeholder="Category Name" class="form-control">
+                  <span class="text-danger"> {{ fm.errors.category_name }}</span>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Category Slug</label>
+                  <input type="text" id="slug" name="category_slug" placeholder="Category slug" class="form-control">
+                  <span class="text-danger"> {{ fm.errors.category_slug }}</span>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+{% endblock content %}
+{% block scripts %}
+    <script type="text/javascript">
+        $('#title').keyup(function() {
+            $('#slug').val($(this).val().toLowerCase().split(',').join('').replace(/\s/g,"-"));
+        });
+    </script>
+{% endblock scripts %}

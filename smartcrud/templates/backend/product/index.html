@@ -1,0 +1,141 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="row">
+     <div class="col-12">
+         <div class="card-box">
+          <div class="d-flex align-items-center justify-content-between">
+               <div class="list_item">
+                   <h2 class="mb-4">All Product </h2>
+               </div>
+               <div class="add_item">
+                   <a href="{% url 'product_create' %}" class="mb-4 btn-lg btn btn-success">Add Product</a>
+               </div>
+           </div>
+          <form action="{% url 'product_index' %}">
+            <div class="search_section mb-5">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="title_search">
+                    <input type="text" name="title" class="form-control" placeholder="Title search...">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="title_search">
+                      <select name="varient" id="" class="form-control">
+                        <option>--search varient--</option>
+                        {% for product in products %}
+                        <option value="{{ product.product_varient }}">{{ product.product_varient }}</option>
+                        {% endfor %}
+                      </select> 
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="price_range">
+                      <div style="background-color: #ddd; padding: 10px">
+                        <div class="row">
+                          <div class="col-6"> 
+                            <input type="text" name="min_price" class="form-control" placeholder="Form Price" >
+                          </div>
+                          <div class="col-6">
+                            <input type="text" name="max_price" class="form-control" placeholder="To Price" >
+                          </div>
+                        </div> 
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="date_price">
+                      <input type="date" class="form-control" >
+                  </div>
+                </div>
+
+                <div class="col-md-3 m-auto mt-3">
+                  <div class="date_price">
+                      <input type="submit" value="Search" class="btn btn-primary" >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <table class="table table-bordered text-center"> 
+               <thead>
+                 <tr>
+                   <th scope="col">SL.NO</th>
+                   <th scope="col">Category</th>
+                   <th scope="col">SubCategory</th>
+                   <th scope="col">Product Title</th>
+                   <th scope="col">Product Description</th>
+                   <th scope="col">Price</th>
+                   <th scope="col">Image</th>
+                   <th scope="col">status</th>
+                   <th scope="col">Action</th>
+                 </tr>
+               </thead>
+               <tbody>
+                    {% for product in products %}
+                         <tr>
+                              <th scope="row">1</th>
+                              <td>{{ product.category.category_name }}</td>
+                              <td>{{ product.subcategory.subcategory_name }}</td>
+                              <td>{{ product.product_title }}</td>
+                              <td>{{ product.product_desc | truncatechars:10}} readmore..</td>
+                              <td>{{ product.product_price }}</td>
+                              <td>
+                                <img width="80px" height="80px" src="{{ product.product_image.url }}" alt="image">
+                              </td>
+                              <td>
+                                {% if product.status == 'active' %}
+                                  <span class="badge badge-success">{{ product.status }}</span>
+                                {% elif product.status == 'pending' %}
+                                  <span class="badge badge-info">{{ product.status }}</span>
+                                  {% else %}
+                                  <span class="badge badge-danger" >Error !!!</span>
+                                {% endif %}
+                              </td>
+                             
+                              <td>
+                                   <div class="dropdown">
+                                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                         Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                          <a class="dropdown-item" href="{% url 'product_edit' product.id %}">Edit</a>
+                                          <a class="dropdown-item" href="{% url 'product_view' product.id %}">View</a>
+                                          <a class="dropdown-item" href="{% url 'product_delete' product.id %}">Delete</a>
+                                        </div>
+                                   </div>
+                              </td>
+                         </tr>
+                    {% endfor %}
+               </tbody>
+             </table>
+             {{ products.number }} / {{ products.paginator.num_pages }}
+             <nav aria-label="Page navigation example">
+               <ul class="pagination justify-content-end">
+                 <li class="page-item">
+                  {% if products.has_previous %}
+                   <a href="{% url 'product_index' %}?page={{ products.previous_page_number }}" class="page-link">Previous</a>
+                   {% endif %}
+                 </li>
+                 {% for number_of_page in products.paginator.page_range %}
+                   {% if products.number == number_of_page %}
+                    <li class="page-item active"><a class="page-link" href="{% url 'product_index' %}?page={{ number_of_page }}">{{ number_of_page }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="{% url 'product_index' %}?page={{ number_of_page }}">{{ number_of_page }}</a></li>
+                 {% endif %}
+                  {% endfor %}
+                 <li class="page-item">
+                  {% if products.has_next %}
+                    <a  class="page-link" href="{% url 'product_index' %}?page={{ products.next_page_number }}">Next</a>
+                  {% endif %}
+                 </li>
+               </ul>
+             </nav>
+          </div>
+     </div>
+</div>
+
+{% endblock content %}

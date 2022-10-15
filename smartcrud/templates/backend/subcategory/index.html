@@ -1,0 +1,79 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="row">
+     <div class="col-12">
+         <div class="card-box">
+          <div class="d-flex align-items-center justify-content-between">
+               <div class="list_item">
+                   <h2 class="mb-4">SubCategory List</h2>
+               </div>
+               <div class="add_item">
+                   <a href="{% url 'subcategory_create' %}" class="mb-4 btn-lg btn btn-success">Add SubCategory</a>
+               </div>
+           </div>
+           <form>
+              <input type="search" placeholder="search by subcategory" name="q" class="form-control">
+           </form>
+           <span>Total {{ subcategories.count }} </span>
+           <table class="table table-bordered text-center">
+               <thead>
+                 <tr>
+                   <th scope="col">SL.NO</th>
+                   <th scope="col">Category Name</th>
+                   <th scope="col">SubCategory Name</th>
+                   <th scope="col">Created At</th>
+                   <th scope="col">Action</th>
+                 </tr>
+               </thead>
+               <tbody>
+                {% if subcategories.count > 0  %}
+                  {% for subcategory in page %}
+                    <tr>
+                      <th scope="row">{{ subcategory.id }}</th>
+                      <td>{{ subcategory.category.category_name }}</td>
+                      <td>{{ subcategory.subcategory_name }}</td>
+                      <td>{{ subcategory.created_at | timesince }} ago </td>
+                      <td>
+                        <a href="{% url 'subcategory_edit' subcategory.id %}" class="btn btn-info">Edit</a>
+                        <a href="{% url 'subcategory_delete' subcategory.id  %}" class="btn btn-danger delete_btn">Delete</a>
+                      </td>  
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <h4 style="color:red">Data Not Found</h4>
+                {% endif %}
+               </tbody>
+           </table>
+           <span>Page {{ page.number }} / {{ page.paginator.num_pages }}</span> 
+           <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item">
+                {% if page.has_previous %}
+                  <a class="page-link" href="{% url 'subcategory_index' %}?page={{ page.previous_page_number }}">Previous</a>
+                {% endif %}
+              </li>
+              {% for num_page in page.paginator.page_range %}
+                {% if num_page == page.number %}
+                <li class="page-item active" >
+                  <a class="page-link" href="{% url 'subcategory_index' %}?page={{ num_page }}">{{ num_page }}</a>
+                </li>
+                {% else %}
+                <li class="page-item" >
+                  <a class="page-link" href="{% url 'subcategory_index' %}?page={{ num_page }}">{{ num_page }}</a>
+                </li>
+                {% endif %}
+              {% endfor %}
+              <li class="page-item">
+                {% if page.has_next %}
+                  <a class="page-link"  href="{% url 'subcategory_index' %}?page={{ page.next_page_number }}" >Next</a>
+                {% endif %}
+              </li>
+            </ul>
+          </nav>
+          </div>
+     </div>
+</div>
+
+{% endblock content %}

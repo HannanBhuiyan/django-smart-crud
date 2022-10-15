@@ -1,0 +1,121 @@
+{% extends 'backend/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card-box">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="list_item">
+                    <h2 class="mb-4">Category List</h2>
+                </div>
+                <div class="add_item">
+                    <a href="{% url 'categroy_create' %}" class="mb-4 btn-lg btn btn-success">Add Category</a>
+                </div>
+            </div>
+            <span>Total {{ total.count }} </span>
+            <table class="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">SL.NO</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Category Slug</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for category in page %}
+                    <tr>
+                      <th scope="row">{{ category.id }}</th>
+                      <td>{{ category.category_name }}</td>
+                      <td>{{ category.category_slug }}</td>
+                      <td>{{ category.created_at | date:'M-d-Y' }}</td>
+                      <td>
+                        <a href="{% url 'category_edit' category.id  %}" class="btn btn-info">Edit</a>
+                        <a data-id="{{ category.id }}" class="btn btn-danger delete_btn">Delete</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+            <span>
+              page {{ page.number }}/{{ page.paginator.num_pages }}
+            </span>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                  <li class="page-item">
+                    {% if page.has_previous %}
+                      <a class="page-link" href="{% url 'category' %}?page={{ page.previous_page_number }}" tabindex="-1" aria-disabled="true">Previous</a>
+                    {% endif %}
+                  </li>
+                  {% for num_page in page.paginator.page_range %}
+                    {% if page.number  == num_page %}
+                      <li class="page-item active"><a class="page-link" href="{% url 'category' %}?page={{ num_page }}">{{ num_page }}</a></li>
+                      {% else %}
+                      <li class="page-item"><a class="page-link" href="{% url 'category' %}?page={{ num_page }}">{{ num_page }}</a></li>
+                    {% endif %}
+                   
+                  {% endfor %}
+                 
+        
+                  <li class="page-item">
+                    {% if page.has_next %}
+                    <a class="page-link" href="{% url 'category' %}?page={{page.next_page_number}}">Next</a>
+                    {% endif %}
+                  </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+{% endblock content %}
+
+
+{% block scripts %}
+  <script type="text/javascript">
+    $(".delete_btn").click(function(){
+      let id = $(this).attr("data-id")
+      let csrf = $("input[name=csrfmiddlewaretoken]").val();
+      mydata = {sid : id, csrfmiddlewaretoken: csrf}
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this imaginary file!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          swal("Poof! Your imaginary file has been deleted!", {
+            icon: "success",
+          });
+          $.ajax({
+            url : "{% url 'category_delete' %}",
+            method : "POST",
+            data : mydata,
+            success: function(data){
+              setInterval(function(){
+                location.reload();
+              }, 2000)
+              toastr.success("Delete success");
+            },
+            error: function(){
+              toastr.error("Error!!! Something is wrong");
+            }
+          })
+        } else {
+          swal("Your imaginary file is safe!");
+        }
+      });    
+      
+    })
+
+
+  </script>
+
+{% endblock scripts %}
+ 
